@@ -125,7 +125,7 @@ fin-twin-x/
 Clone the repository:
 
 ```bash
-git clone YOUR_GITHUB_REPOSITORY_URL
+git clone https://github.com/humnatabassum2006/fin-twin-x.git
 ```
 
 Move into the project directory:
