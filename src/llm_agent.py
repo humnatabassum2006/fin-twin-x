@@ -1,13 +1,14 @@
 import os
+import streamlit as st
 from dotenv import load_dotenv
 from openai import OpenAI, RateLimitError
 
-
 load_dotenv()
 
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
-)
+# Streamlit Cloud secrets se key read karein, agar local ho toh .env se
+api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+
+client = OpenAI(api_key=api_key)
 
 
 def build_ai_prompt(
@@ -52,12 +53,14 @@ def generate_ai_answer(prompt):
 
     try:
 
-        response = client.responses.create(
-            model="gpt-5-mini",
-            input=prompt
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
         )
 
-        return response.output_text
+        return response.choices[0].message.content
 
     except RateLimitError:
 
