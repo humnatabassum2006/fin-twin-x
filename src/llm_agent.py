@@ -1,12 +1,15 @@
 import os
 import streamlit as st
 from dotenv import load_dotenv
-from openai import OpenAI, RateLimitError
+from openai import OpenAI, RateLimitError, APIConnectionError
 
 load_dotenv()
 
 # Streamlit Cloud secrets se key read karein, agar local ho toh .env se
-api_key = st.secrets.get("OPENAI_API_KEY") or os.getenv("OPENAI_API_KEY")
+try:
+    api_key = st.secrets["OPENAI_API_KEY"]
+except Exception:
+    api_key = os.getenv("OPENAI_API_KEY")
 
 client = OpenAI(api_key=api_key)
 
@@ -69,4 +72,13 @@ def generate_ai_answer(prompt):
             "the OpenAI API has no remaining credits. "
             "Your financial data and RAG knowledge base are working correctly. "
             "Please add API credits later to enable the live AI response."
+        )
+    
+    except APIConnectionError:
+
+        return (
+            "⚠️ FinTwin-X AI is temporarily unavailable because "
+            "the OpenAI API connection could not be established. "
+            "Your financial data and RAG knowledge base are working correctly. "
+            "Please check your internet connection or try again later."
         )

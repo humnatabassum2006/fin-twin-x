@@ -435,7 +435,8 @@ user_question = st.text_input(
 if user_question:
 
     question = user_question.lower()
-    
+    answer = None
+
     # =====================================================
     # DIRECT PERSONAL FINANCIAL QUESTIONS
     # =====================================================
@@ -1157,29 +1158,9 @@ if user_question:
 
     else:
    
-           retrieved_knowledge = semantic_search(user_question)
+        retrieved_knowledge = semantic_search(user_question)
    
-           prompt = build_ai_prompt(
-               user_question,
-               retrieved_knowledge,
-               agent_result["health_score"],
-               agent_result["savings_rate"],
-               agent_result["debt_to_income"],
-               agent_result["emergency_fund"]
-           )
-   
-           answer = generate_ai_answer(prompt)
-
-
-# =====================================================
-# RAG + AI FALLBACK
-# =====================================================
-
-else:
-
-    retrieved_knowledge = semantic_search(user_question)
-
-    prompt = build_ai_prompt(
+        prompt = build_ai_prompt(
             user_question,
             retrieved_knowledge,
             agent_result["health_score"],
@@ -1187,10 +1168,12 @@ else:
             agent_result["debt_to_income"],
             agent_result["emergency_fund"]
         )
+   
+        answer = generate_ai_answer(prompt)
+        
+    if answer:
+        st.info(f"🤖 FinTwin-X: {answer}")
 
-    answer = generate_ai_answer(prompt)
-
-    st.info(f"🤖 FinTwin-X: {answer}")
 
 # =========================================================
 # STRESS SCENARIO SELECTION
